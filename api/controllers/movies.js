@@ -3,6 +3,7 @@ import { Parser } from "json2csv";
 import fs from "fs";
 
 import Movie from "../models/movie.js";
+import bucket from "../../firebase/firebase.js";
 
 // Fetch all movies
 const getAllMovies = async (req, res, next) => {
@@ -34,10 +35,19 @@ const createMovie = async (req, res, next) => {
   });
 
   try {
-    const result = await movie.save();
+    const createdMovie = await movie.save();
     res.status(201).json({
       message: "Movie created successfully",
     });
+
+    await bucket
+      .upload(createdMovie.moviePoster, {
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      })
+      .then(() => console.log("Uploaded"))
+      .catch((err) => console.log(err));
   } catch (err) {
     res.status(500).json({ error: err });
   }
