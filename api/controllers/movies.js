@@ -3,12 +3,16 @@ import { Parser } from "json2csv";
 import fs from "fs";
 
 import Movie from "../models/movie.js";
-import bucket from "../../firebase/firebase.js";
+import bucket from "../../firebase/firebase.js"
 
 // Fetch all movies
 const getAllMovies = async (req, res, next) => {
+  const { limit, skip } = pagination(req.query);
+
   try {
     const movies = await Movie.find()
+      .skip(skip)
+      .limit(limit)
       .select("_id name genre actors business rating reviews moviePoster")
       .populate("actors", "name");
 
