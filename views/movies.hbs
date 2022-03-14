@@ -1,0 +1,13 @@
+<section>
+  {{#each movies}}
+    <div class="card">
+      <img src={{this.moviePoster}} alt="profile image" />
+      <div class="card-body">
+        <h4><b>{{this.name}}</b></h4>
+        <p>{{this.genre}}</p>
+        <p>{{this.business}}</p>
+        <a href="/movies/{{this._id}}">Movie detail</a>
+      </div>
+    </div>
+  {{/each}}
+</section>

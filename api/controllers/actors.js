@@ -4,7 +4,10 @@ import download from "image-downloader";
 
 import Actor from "../models/actor.js";
 import bucket from "../../firebase/firebase.js";
-
+<<<<<<< HEAD
+=======
+import pagination from "../utils/pagination.js";
+>>>>>>> 362290860d7c9faaeb0754c9bfe21a74275131ae
 
 const url = "https://dummyapi.io/data/v1/user?limit=10";
 
@@ -82,11 +85,13 @@ const getAllActors = async (req, res, next) => {
     const actors = await Actor.find()
       .skip(skip)
       .limit(limit)
-      .select("_id name age gender profileImage");
-    res.status(200).json({
-      totalActors: actors.length,
-      actors,
-    });
+      .select("_id name age gender profileImage")
+      .lean();
+    // res.status(200).json({
+    //   totalActors: actors.length,
+    //   actors,
+    // });
+    res.render("actors", { actors });
   } catch (err) {
     res.status(500).json({ error: err });
   }
@@ -135,11 +140,12 @@ const getSingleActor = async (req, res, next) => {
   const { actorId } = req.params;
 
   try {
-    const actor = await Actor.findById(actorId).select(
-      "_id name age gender profileImage"
-    );
+    const actor = await Actor.findById(actorId)
+      .select("_id name age gender profileImage")
+      .lean();
     if (actor) {
-      res.status(200).json(actor);
+      // res.status(200).json(actor);
+      res.render("singleActors", { actor });
     } else {
       res.status(404).json({ message: "Actor Not Found." });
     }
