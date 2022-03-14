@@ -5,7 +5,6 @@ import download from "image-downloader";
 import Actor from "../models/actor.js";
 import bucket from "../../firebase/firebase.js";
 
-
 const url = "https://dummyapi.io/data/v1/user?limit=10";
 
 const options = {
