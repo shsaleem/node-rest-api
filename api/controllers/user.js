@@ -5,11 +5,13 @@ import _ from "lodash";
 
 import User from "../models/user.js";
 import sendEmail from "../utils/sendEmail.js";
+import pagination from "../utils/pagination.js";
 
 // Get All Users
 const getAllUsers = async (req, res, next) => {
+  const { limit, skip } = pagination(req.query);
   try {
-    const users = await User.find().select("_id email");
+    const users = await User.find().skip(skip).limit(limit).select("_id email");
     res.status(200).json({
       totalUsers: users.length,
       users,
