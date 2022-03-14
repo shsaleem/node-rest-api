@@ -3,6 +3,8 @@ import fetch from "cross-fetch";
 import download from "image-downloader";
 
 import Actor from "../models/actor.js";
+import bucket from "../../firebase/firebase.js";
+
 
 const url = "https://dummyapi.io/data/v1/user?limit=10";
 
@@ -57,11 +59,13 @@ const fetchActors = () => {
 
 // Get Dummy Actors
 const getDummyActors = async (req, res, next) => {
+  let { limit, skip } = pagination(req.query);
   fetchActors();
   try {
-    const actors = await Actor.find().select(
-      "_id name age gender profileImage"
-    );
+    const actors = await Actor.find()
+      .skip(skip)
+      .limit(limit)
+      .select("_id name age gender profileImage");
     res.status(200).json({
       totalActors: actors.length,
       actors,
@@ -73,10 +77,12 @@ const getDummyActors = async (req, res, next) => {
 
 // Fetch all actors
 const getAllActors = async (req, res, next) => {
+  let { limit, skip } = pagination(req.query);
   try {
-    const actors = await Actor.find().select(
-      "_id name age gender profileImage"
-    );
+    const actors = await Actor.find()
+      .skip(skip)
+      .limit(limit)
+      .select("_id name age gender profileImage");
     res.status(200).json({
       totalActors: actors.length,
       actors,
@@ -101,6 +107,15 @@ const createActor = async (req, res, next) => {
     res.status(201).json({
       message: "Actor created successfully",
     });
+
+    await bucket
+      .upload(createdActor.profileImage, {
+        metadata: {
+          contentType: req.file.mimetype,
+        },
+      })
+      .then(() => console.log("Uploaded"))
+      .catch((err) => console.log(err));
   } catch (err) {
     res.status(500).json({ error: err });
   }
