@@ -38,23 +38,33 @@ const createMovie = async (req, res, next) => {
     business: req.body.business,
     rating: req.body.rating,
     reviews: req.body.reviews,
+    moviePoster: req.file.originalname,
     moviePoster: process.env.BASE_URL.req.file.path,
   });
+
+  const file = bucket.file(req.file.originalname);
+
+  const stream = file.createWriteStream({
+    metadata: {
+      contentType: req.file.mimetype,
+    },
+  });
+
+  stream.on("error", (err) => {
+    console.log(err);
+  });
+
+  stream.on("finish", () => {
+    console.log("file uploaded");
+  });
+
+  stream.end(req.file.buffer);
 
   try {
     const createdMovie = await movie.save();
     res.status(201).json({
       message: "Movie created successfully",
     });
-
-    await bucket
-      .upload(createdMovie.moviePoster, {
-        metadata: {
-          contentType: req.file.mimetype,
-        },
-      })
-      .then(() => console.log("Uploaded"))
-      .catch((err) => console.log(err));
   } catch (err) {
     res.status(500).json({ error: err });
   }

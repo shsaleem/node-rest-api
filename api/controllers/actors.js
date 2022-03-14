@@ -104,23 +104,32 @@ const createActor = async (req, res, next) => {
     name: req.body.name,
     age: req.body.age,
     gender: req.body.gender,
-    profileImage: req.file.path,
+    profileImage: req.file.originalname,
   });
+
+  const file = bucket.file(req.file.originalname);
+
+  const stream = file.createWriteStream({
+    metadata: {
+      contentType: req.file.mimetype,
+    },
+  });
+
+  stream.on("error", (err) => {
+    console.log(err);
+  });
+
+  stream.on("finish", () => {
+    console.log("file uploaded");
+  });
+
+  stream.end(req.file.buffer);
 
   try {
     const createdActor = await actor.save();
     res.status(201).json({
       message: "Actor created successfully",
     });
-
-    await bucket
-      .upload(createdActor.profileImage, {
-        metadata: {
-          contentType: req.file.mimetype,
-        },
-      })
-      .then(() => console.log("Uploaded"))
-      .catch((err) => console.log(err));
   } catch (err) {
     res.status(500).json({ error: err });
   }
