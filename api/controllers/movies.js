@@ -3,7 +3,8 @@ import { Parser } from "json2csv";
 import fs from "fs";
 
 import Movie from "../models/movie.js";
-import bucket from "../../firebase/firebase.js"
+import bucket from "../../firebase/firebase.js";
+import pagination from "../utils/pagination.js";
 
 // Fetch all movies
 const getAllMovies = async (req, res, next) => {
@@ -14,12 +15,14 @@ const getAllMovies = async (req, res, next) => {
       .skip(skip)
       .limit(limit)
       .select("_id name genre actors business rating reviews moviePoster")
-      .populate("actors", "name");
+      .populate("actors", "name")
+      .lean();
 
-    res.status(200).json({
-      totalMovies: movies.length,
-      movies,
-    });
+    // res.status(200).json({
+    //   totalMovies: movies.length,
+    //   movies,
+    // });
+    res.render("movies", { movies });
   } catch (err) {
     res.status(500).json({ error: err });
   }
@@ -35,7 +38,7 @@ const createMovie = async (req, res, next) => {
     business: req.body.business,
     rating: req.body.rating,
     reviews: req.body.reviews,
-    moviePoster: req.file.path,
+    moviePoster: process.env.BASE_URL.req.file.path,
   });
 
   try {
@@ -63,10 +66,12 @@ const getSingleMovie = async (req, res, next) => {
   try {
     const movie = await Movie.findById(movieId)
       .select("_id name genre actors business rating reviews moviePoster")
-      .populate("actors", "name");
+      .populate("actors", "name")
+      .lean();
 
     if (movie) {
-      res.status(200).json(movie);
+      // res.status(200).json(movie);
+      res.render("singleMovie", { movie });
     } else {
       res.status(404).json({ message: "Movie Not Found." });
     }
