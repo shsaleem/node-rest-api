@@ -1,13 +1,17 @@
-<section>
-  {{#each actors}}
-    <div class="card">
-      <img src={{this.profileImage}} alt="profile image" />
-      <div class="card-body">
-        <h4><b>{{this.name}}</b></h4>
-        <p>{{this.age}}</p>
-        <p>{{this.gender}}</p>
-        <a href="/actors/{{this._id}}">Actor detail</a>
+<div class="container pt-5">
+  <h1 class="text-center">Actors</h1>
+  <div class="row">
+    {{#each actors}}
+      <div class="col-md-3 mb-3">
+        <div class="card">
+          <img src="{{this.profileImage}}" class="card-img-top" />
+          <div class="card-body">
+            <h5 class="card-title">{{this.name}}</h5>
+            <p class="card-text">Age: {{this.age}}</p>
+            <p class="card-text">Gender: {{this.gender}}</p>
+            <a class="btn btn-primary w-100" href="/actors/{{this._id}}">View Detials</a>
+          </div>
+        </div>
       </div>
-    </div>
-  {{/each}}
-</section>
+    {{/each}}
+  </div>
