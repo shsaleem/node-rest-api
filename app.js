@@ -25,7 +25,7 @@ mongoose.connect(
     "@movie-rest-api.3pzxw.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 );
 
-app.use(express.static(__dirname + "/public"));
+app.use(express.static("public"));
 app.use(morgan("dev"));
 app.use(express.static("uploads"));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -39,8 +39,6 @@ app.engine(
     layoutDir: __dirname + "views/layouts",
   })
 );
-
-// app.set("views", "./views");
 
 app.get("/", (req, res) => {
   res.render("main");

@@ -1,13 +1,17 @@
-<section>
-  {{#each movies}}
-    <div class="card">
-      <img src={{this.moviePoster}} alt="profile image" />
-      <div class="card-body">
-        <h4><b>{{this.name}}</b></h4>
-        <p>{{this.genre}}</p>
-        <p>{{this.business}}</p>
-        <a href="/movies/{{this._id}}">Movie detail</a>
+<div class="container pt-5">
+  <h1 class="text-center">Movies</h1>
+  <div class="row">
+    {{#each movies}}
+      <div class="col-md-3 mb-3">
+        <div class="card">
+          <img src="godfather2.jpg" class="card-img-top" />
+          <div class="card-body">
+            <h5 class="card-title">{{this.name}}</h5>
+            <p class="card-text">Genre: {{this.genre}}</p>
+            <p class="card-text">Business: {{this.business}}</p>
+            <a class="btn btn-primary w-100" href="/movies/{{this._id}}">View Detials</a>
+          </div>
+        </div>
       </div>
-    </div>
-  {{/each}}
-</section>
+    {{/each}}
+  </div>
